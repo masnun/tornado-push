@@ -5,7 +5,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var ws = new WebSocket("ws://localhost:8888/socket");
+            var ws = new WebSocket("ws://{{ host }}/socket");
             ws.onmessage = function(event) {
                 $('textarea#chat').append(  event.data +'\n');
             }
@@ -17,7 +17,7 @@
             var data = $("#name").val() + ": " + $("#message").val()
 
             $.ajax({
-              url: 'http://localhost:8888/push',
+              url: 'http://{{ host }}/push',
               data: {
                 data: data
               },

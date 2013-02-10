@@ -1,39 +1,33 @@
+# Add to path
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+
+# Bootstrap the app
 import tornado.ioloop
 import tornado.web
-from tornado import websocket
+import tornado.autoreload
+import datetime
+from urls import urlpatterns
 
-GLOBALS={
-    'sockets': []
-}
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        #self.write("STATUS: Server running")
-        html = open("chat.html","r")
-        self.write(html.read())
+# Server Auto Reload Hook
 
-class ClientSocket(websocket.WebSocketHandler):
-    def open(self):
-        GLOBALS['sockets'].append(self)
-        print "WebSocket opened"
+def auto_reload_hook():
+    print "Server is starting: " + str(datetime.datetime.now())
 
-    def on_close(self):
-        print "WebSocket closed"
-        GLOBALS['sockets'].remove(self)
 
-class Announcer(tornado.web.RequestHandler):
-    def get(self, *args, **kwargs):
-        data = self.get_argument('data')
-        for socket in GLOBALS['sockets']:
-            socket.write_message(data)
-        self.write('Posted')
-
-application = tornado.web.Application([
-    (r"/", MainHandler),
-    (r"/socket", ClientSocket),
-    (r"/push", Announcer),
-])
-
+application = tornado.web.Application(urlpatterns)
 if __name__ == "__main__":
     application.listen(8888)
-    tornado.ioloop.IOLoop.instance().start()
+    tornado.autoreload.add_reload_hook(auto_reload_hook)
+    tornado.autoreload.start()
+    print "Server is starting: " + str(datetime.datetime.now())
+    try:
+        tornado.ioloop.IOLoop.instance().start()
+    except KeyboardInterrupt:
+        print ""
+        print "Quitting"
+        sys.exit(0)
