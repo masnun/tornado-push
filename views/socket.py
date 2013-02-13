@@ -1,5 +1,5 @@
 from tornado.websocket import WebSocketHandler
-from core.socket_storage import SOCKETS
+from core.storage import SOCKETS
 
 class ClientSocket(WebSocketHandler):
     def open(self):

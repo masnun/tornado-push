@@ -22,3 +22,11 @@ class WordPress:
         data = cursor.fetchone()
 
         return data[2]
+
+    def get_username(self, token):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM users WHERE csrf_token='" + token + "'"
+        cursor.execute(query)
+        data = cursor.fetchone()
+
+        return data[0]

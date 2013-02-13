@@ -6,10 +6,11 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ws = new WebSocket("ws://{{ host }}/socket");
-            ws.onmessage = function(event) {
-                $('textarea#chat').append(  event.data +'\n');
+            ws.onmessage = function (event) {
+                var data = eval('(' + event.data + ')');
+                $('textarea#chat').append(data.user + ': ' + data.value + '\n');
             }
-            $('textarea#chat').append( 'Connection established \n');
+            $('textarea#chat').append('Connection established \n');
 
         });
 
@@ -17,14 +18,14 @@
             var data = $("#name").val() + ": " + $("#message").val()
 
             $.ajax({
-              url: 'http://{{ host }}/push',
-              data: {
-                data: data
-              },
-              success: function(re) {
-                //console.log("Data pushed");
-                $("#message").val('')
-              }
+                url: 'http://{{ host }}/push',
+                data: {
+                    data: data
+                },
+                success: function (re) {
+                    //console.log("Data pushed");
+                    $("#message").val('')
+                }
             });
         }
 
@@ -37,11 +38,11 @@
 
 
 <strong>Name:</strong>
-<input type="text" id="name" />
+<input type="text" id="name"/>
 
 <strong>Message:</strong>
-<input type="text" id="message" />
-<input type="submit" onclick="postMessage()" value="SEND" />
+<input type="text" id="message"/>
+<input type="submit" onclick="postMessage()" value="SEND"/>
 
 </body>
 </html>

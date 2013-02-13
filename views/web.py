@@ -1,5 +1,5 @@
 from core.handlers import WebRequestHandler
-from core.socket_storage import SOCKETS
+from core.storage import SOCKETS
 from settings import SECRET_KEY
 import hashlib
 import time
@@ -13,10 +13,20 @@ class FrontPage(WebRequestHandler):
 
 
 class Pusher(WebRequestHandler):
-    def get(self, *args, **kwargs):
-        data = self.get_argument('data')
-        for socket in SOCKETS:
-            socket.write_message(data)
+    def post(self, *args, **kwargs):
+        value = self.get_argument('value', None)
+        action = self.get_argument('action', None)
+        csrf_token = self.get_argument('csrf_token', None)
+
+        if value is not None and action is not None and csrf_token is not None:
+            wp = WordPress()
+            user = wp.get_username(csrf_token)
+            response = {'user': user, 'action': action, 'value': value}
+            data = json.dumps(response)
+
+            for socket in SOCKETS:
+                socket.write_message(data)
+
         self.write('Posted')
 
 
@@ -35,7 +45,3 @@ class AuthToken(WebRequestHandler):
         else:
             response = {'status': 'error', 'token': None}
             self.write(json.dumps(response))
-
-
-
-
