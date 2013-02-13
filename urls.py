@@ -6,4 +6,5 @@ urlpatterns = [
     (r"/", FrontPage),
     (r"/socket", ClientSocket),
     (r"/push", Pusher),
+    (r"/auth", AuthToken),
 ]
