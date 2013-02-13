@@ -1,5 +1,5 @@
 from core.handlers import WebRequestHandler
-from core.storage import SOCKETS
+from core.storage import SOCKETS, CHAT
 from settings import SECRET_KEY
 import hashlib
 import time
@@ -9,23 +9,29 @@ import json
 
 class FrontPage(WebRequestHandler):
     def get(self):
-        self.render('chat.html', {'host': self.request.host})
+        wp = WordPress()
+        token = wp.get_token('masnun')
+        self.render('chat.html', {'host': self.request.host, 'csrf_token': token})
 
 
 class Pusher(WebRequestHandler):
     def post(self, *args, **kwargs):
-        value = self.get_argument('value', None)
+        value = self.get_argument('val', None)
         action = self.get_argument('action', None)
         csrf_token = self.get_argument('csrf_token', None)
 
         if value is not None and action is not None and csrf_token is not None:
             wp = WordPress()
             user = wp.get_username(csrf_token)
-            response = {'user': user, 'action': action, 'value': value}
+            response = {'user': user, 'action': action, 'val': value, 'line': CHAT['line']}
             data = json.dumps(response)
 
             for socket in SOCKETS:
                 socket.write_message(data)
+
+            if action == 'add':
+                newline = CHAT['line'] + 1
+                CHAT['line'] = newline
 
         self.write('Posted')
 

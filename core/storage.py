@@ -1,2 +1,2 @@
 SOCKETS = []
-LINE_NO = []
+CHAT = {'line': 1}

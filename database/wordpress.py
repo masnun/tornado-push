@@ -21,7 +21,7 @@ class WordPress:
         cursor.execute(query)
         data = cursor.fetchone()
 
-        return data[2]
+        return data[1]
 
     def get_username(self, token):
         cursor = self.db_connection.cursor()

@@ -8,22 +8,33 @@
             var ws = new WebSocket("ws://{{ host }}/socket");
             ws.onmessage = function (event) {
                 var data = eval('(' + event.data + ')');
-                $('textarea#chat').append(data.user + ': ' + data.value + '\n');
+                var action = data.action;
+
+                if (action == "add") {
+                    html = $('<div id="' + data.line + '"><b>' + data.user + ':</b> ' + data.val + '</div>');
+                    $("div#chat").append(html);
+                }
+
+
             }
-            $('textarea#chat').append('Connection established \n');
+
+            $("div#chat").append($('<b>Connection Stabilished</b>'));
 
         });
 
         function postMessage() {
-            var data = $("#name").val() + ": " + $("#message").val()
+            var msg = $("#message").val();
 
             $.ajax({
                 url: 'http://{{ host }}/push',
+                method: 'POST',
                 data: {
-                    data: data
+                    action: 'add',
+                    csrf_token: '{{ csrf_token }}',
+                    val: msg
                 },
                 success: function (re) {
-                    //console.log("Data pushed");
+                    console.log("Data pushed");
                     $("#message").val('')
                 }
             });
@@ -34,12 +45,12 @@
 </head>
 <body>
 <h1>Chat Area</h1>
-<textarea id="chat" cols="100" rows="20"></textarea><br/>
 
+<div id="chat">
 
-<strong>Name:</strong>
-<input type="text" id="name"/>
+</div>
 
+<br/><br/>
 <strong>Message:</strong>
 <input type="text" id="message"/>
 <input type="submit" onclick="postMessage()" value="SEND"/>
