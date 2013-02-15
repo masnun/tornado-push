@@ -53,10 +53,12 @@ class AuthToken(WebRequestHandler):
     def post(self, *args, **kwargs):
         secret_key = self.get_argument('secret_key', None)
         username = self.get_argument('username', None)
+        mod = self.get_argument('mod', 0)
+
         if secret_key == SECRET_KEY:
             token = hashlib.md5(str(time.time()) + username).hexdigest()
             wp = WordPress()
-            wp.set_token(username, token)
+            wp.set_token(username, token, int(mod))
 
             response = {'status': 'ok', 'token': token}
             self.write(json.dumps(response))

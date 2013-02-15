@@ -12,7 +12,7 @@ class WordPress:
         cursor = self.db_connection.cursor()
         cursor.execute("DELETE FROM users WHERE user_name='" + username + "'")
         cursor.execute(
-            "INSERT INTO users (user_name,csrf_token,mod) VALUES ('" + username + "','" + token + "','" + mod + "') ")
+            "INSERT INTO users (user_name,csrf_token,`mod`) VALUES ('" + str(username) + "','" + str(token) + "','" + str(mod) + "') ")
         self.db_connection.commit()
 
 
