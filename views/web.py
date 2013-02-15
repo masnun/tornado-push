@@ -9,9 +9,13 @@ import json
 
 class FrontPage(WebRequestHandler):
     def get(self):
+        user = self.get_argument('user', None)
+        if user is None:
+            user = 'masnun'
         wp = WordPress()
-        token = wp.get_token('masnun')
-        self.render('chat.html', {'host': self.request.host, 'csrf_token': token})
+        token = wp.get_token(user)
+        user, mod = wp.get_username(token)
+        self.render('chat.html', {'host': self.request.host, 'csrf_token': token, 'mod': mod})
 
 
 class Pusher(WebRequestHandler):

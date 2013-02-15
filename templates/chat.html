@@ -18,7 +18,14 @@
                 var action = data.action;
 
                 if (action == "add") {
-                    html = $('<div id="' + data.line + '"><b>' + data.user + ':</b> ' + data.val + '</div>');
+
+                    {% if mod == 1 %}
+                        var del_link = ' <a href="" onclick="removeMessage('+ data.line +'); return false;">x</a>';
+                    {% else %}
+                        var del_link = '';
+                    {% end %}
+
+                    html = $('<div id="' + data.line + '"><b>' + data.user + ':</b> ' + data.val + del_link + '</div>');
                     $("div#chat").append(html);
                 }
 
@@ -40,14 +47,34 @@
 
         function postMessage() {
             var msg = $("#message").val();
+            var token =  $("input#csrf_token").val()
 
             $.ajax({
                 url: 'http://{{ host }}/push',
                 method: 'POST',
                 data: {
                     action: 'add',
-                    csrf_token: '{{ csrf_token }}',
+                    csrf_token: token,
                     val: msg
+                },
+                success: function (re) {
+                    console.log("Data pushed");
+                    $("#message").val('')
+                }
+            });
+        }
+
+
+        function removeMessage(id) {
+            var token =  $("input#csrf_token").val()
+
+            $.ajax({
+                url: 'http://{{ host }}/push',
+                method: 'POST',
+                data: {
+                    action: 'remove',
+                    csrf_token: token,
+                    val: id
                 },
                 success: function (re) {
                     console.log("Data pushed");
@@ -69,6 +96,7 @@
 <br/><br/>
 <strong>Message:</strong>
 <input type="text" id="message"/>
+<input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 <input type="button" onclick="postMessage()" value="SEND"/>
 <input type="button" id="connect_btn" onclick="connect()" value="CONNECT"/>
 
