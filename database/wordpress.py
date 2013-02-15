@@ -8,10 +8,11 @@ class WordPress:
     def get_connection(self):
         return self.db_connection
 
-    def set_token(self, username, token):
+    def set_token(self, username, token, mod=0):
         cursor = self.db_connection.cursor()
         cursor.execute("DELETE FROM users WHERE user_name='" + username + "'")
-        cursor.execute("INSERT INTO users (user_name,csrf_token) VALUES ('" + username + "','" + token + "') ")
+        cursor.execute(
+            "INSERT INTO users (user_name,csrf_token,mod) VALUES ('" + username + "','" + token + "','" + mod + "') ")
         self.db_connection.commit()
 
 
@@ -29,4 +30,4 @@ class WordPress:
         cursor.execute(query)
         data = cursor.fetchone()
 
-        return data[0]
+        return data[0], data[2]

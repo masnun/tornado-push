@@ -5,9 +5,16 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            connect();
+        });
+
+        function connect() {
             var ws = new WebSocket("ws://{{ host }}/socket");
             ws.onmessage = function (event) {
                 var data = eval('(' + event.data + ')');
+
+                console.log(data);
+
                 var action = data.action;
 
                 if (action == "add") {
@@ -15,12 +22,21 @@
                     $("div#chat").append(html);
                 }
 
+                if (action == "remove") {
+                    $("div#" + data.val).remove();
+                }
+
 
             }
 
-            $("div#chat").append($('<b>Connection Stabilished</b>'));
+            ws.onclose = function () {
+                $("div#chat").append($('<b>Connection Terminated</b><br/><br/>'));
+                $("input#connect_btn").show();
+            }
 
-        });
+            $("div#chat").append($('<b>Connection Stabilished</b><br/><br/>'));
+            $("input#connect_btn").hide();
+        }
 
         function postMessage() {
             var msg = $("#message").val();
@@ -53,7 +69,9 @@
 <br/><br/>
 <strong>Message:</strong>
 <input type="text" id="message"/>
-<input type="submit" onclick="postMessage()" value="SEND"/>
+<input type="button" onclick="postMessage()" value="SEND"/>
+<input type="button" id="connect_btn" onclick="connect()" value="CONNECT"/>
+
 
 </body>
 </html>

@@ -22,18 +22,27 @@ class Pusher(WebRequestHandler):
 
         if value is not None and action is not None and csrf_token is not None:
             wp = WordPress()
-            user = wp.get_username(csrf_token)
+            user, mod = wp.get_username(csrf_token)
             response = {'user': user, 'action': action, 'val': value, 'line': CHAT['line']}
             data = json.dumps(response)
 
-            for socket in SOCKETS:
-                socket.write_message(data)
-
             if action == 'add':
+                for socket in SOCKETS:
+                    socket.write_message(data)
+
                 newline = CHAT['line'] + 1
                 CHAT['line'] = newline
+                self.write('Added')
 
-        self.write('Posted')
+            if action == 'remove':
+                if int(mod) == 1:
+                    for socket in SOCKETS:
+                        socket.write_message(data)
+                    self.write('Remove command issued')
+                else:
+                    self.write('Permission denied')
+        else:
+            self.write('Invalid Value')
 
 
 class AuthToken(WebRequestHandler):
