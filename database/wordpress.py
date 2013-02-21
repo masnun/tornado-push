@@ -10,15 +10,16 @@ class WordPress:
 
     def set_token(self, username, token, mod=0):
         cursor = self.db_connection.cursor()
-        cursor.execute("DELETE FROM users WHERE user_name='" + username + "'")
+        cursor.execute("DELETE FROM users WHERE user_name='" + str(username) + "'")
         cursor.execute(
-            "INSERT INTO users (user_name,csrf_token,`mod`) VALUES ('" + str(username) + "','" + str(token) + "','" + str(mod) + "') ")
+            "INSERT INTO users (user_name,csrf_token,`mod`) VALUES ('" + str(username) + "','" + str(
+                token) + "','" + str(mod) + "') ")
         self.db_connection.commit()
 
 
     def get_token(self, username):
         cursor = self.db_connection.cursor()
-        query = "SELECT * FROM users WHERE user_name='" + username + "'"
+        query = "SELECT * FROM users WHERE user_name='" + str(username) + "'"
         cursor.execute(query)
         data = cursor.fetchone()
 
@@ -26,8 +27,11 @@ class WordPress:
 
     def get_username(self, token):
         cursor = self.db_connection.cursor()
-        query = "SELECT * FROM users WHERE csrf_token='" + token + "'"
+        query = "SELECT * FROM users WHERE csrf_token='" + str(token) + "'"
         cursor.execute(query)
         data = cursor.fetchone()
 
-        return data[0], data[2]
+        if data is not None:
+            return data[0], data[2]
+        else:
+            return None,None

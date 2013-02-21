@@ -9,11 +9,8 @@ import json
 
 class FrontPage(WebRequestHandler):
     def get(self):
-        user = self.get_argument('user', None)
-        if user is None:
-            user = 'masnun'
+        token = self.get_argument('csrf_token', None)
         wp = WordPress()
-        token = wp.get_token(user)
         user, mod = wp.get_username(token)
         self.render('chat.html', {'host': self.request.host, 'csrf_token': token, 'mod': mod})
 
@@ -27,26 +24,30 @@ class Pusher(WebRequestHandler):
         if value is not None and action is not None and csrf_token is not None:
             wp = WordPress()
             user, mod = wp.get_username(csrf_token)
-            response = {'user': user, 'action': action, 'val': value, 'line': CHAT['line']}
-            data = json.dumps(response)
 
-            if action == 'add':
-                for socket in SOCKETS:
-                    socket.write_message(data)
+            if user is not None:
+                response = {'user': user, 'action': action, 'val': value, 'line': CHAT['line']}
+                data = json.dumps(response)
 
-                newline = CHAT['line'] + 1
-                CHAT['line'] = newline
-                self.write('Added')
-
-            if action == 'remove':
-                if int(mod) == 1:
+                if action == 'add':
                     for socket in SOCKETS:
                         socket.write_message(data)
-                    self.write('Remove command issued')
-                else:
-                    self.write('Permission denied')
+
+                    newline = CHAT['line'] + 1
+                    CHAT['line'] = newline
+                    self.write('Added')
+
+                if action == 'remove':
+                    if int(mod) == 1:
+                        for socket in SOCKETS:
+                            socket.write_message(data)
+                        self.write('Remove command issued')
+                    else:
+                        self.write('Permission denied')
+            else:
+                self.write('Invalid Value')
         else:
-            self.write('Invalid Value')
+            self.write('No user found')
 
 
 class AuthToken(WebRequestHandler):
