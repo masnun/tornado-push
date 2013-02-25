@@ -1,5 +1,5 @@
 from database.core import connect_db
-import time
+import time, datetime
 
 
 class Database:
@@ -39,13 +39,14 @@ class Database:
 
     def save_message(self, user_name, message):
         cursor = self.db_connection.cursor()
+        time_stamp = int(time.time())
         query = "INSERT INTO messages (user_name,message,time_stamp) VALUES ('" + user_name + "','" + message + "'," + str(
-            int(time.time())) + ")"
+            time_stamp) + ")"
 
         cursor.execute(query)
         line_id = self.db_connection.insert_id()
         self.db_connection.commit()
-        return line_id
+        return line_id, str(datetime.datetime.fromtimestamp(time_stamp).strftime("%B %d, %Y"))
 
     def remove_message(self, message_id):
         cursor = self.db_connection.cursor()

@@ -30,8 +30,8 @@ class Pusher(WebRequestHandler):
 
                 if action == 'add':
                     for socket in SOCKETS:
-                        line_id = db.save_message(user, value)
-                        response = {'user': user, 'action': action, 'val': value, 'line': line_id}
+                        line_id, date = db.save_message(user, value)
+                        response = {'user': user, 'action': action, 'val': value, 'line': line_id, 'date': date}
                         data = json.dumps(response)
 
                         socket.write_message(data)
