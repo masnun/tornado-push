@@ -1,5 +1,5 @@
 from core.handlers import WebRequestHandler
-from core.storage import SOCKETS, CHAT
+from core.storage import SOCKETS
 from settings import SECRET_KEY
 import hashlib
 import time
@@ -26,21 +26,24 @@ class Pusher(WebRequestHandler):
             user, mod = db.get_username(csrf_token)
 
             if user is not None:
-                response = {'user': user, 'action': action, 'val': value, 'line': CHAT['line']}
-                data = json.dumps(response)
+
 
                 if action == 'add':
                     for socket in SOCKETS:
-                        socket.write_message(data)
-                        db.save_message(user, value)
+                        line_id = db.save_message(user, value)
+                        response = {'user': user, 'action': action, 'val': value, 'line': line_id}
+                        data = json.dumps(response)
 
-                    newline = CHAT['line'] + 1
-                    CHAT['line'] = newline
+                        socket.write_message(data)
+
                     self.write('Added')
 
                 if action == 'remove':
+                    response = {'user': user, 'action': action, 'val': value}
+                    data = json.dumps(response)
                     if int(mod) == 1:
                         for socket in SOCKETS:
+                            db.remove_message(value)
                             socket.write_message(data)
                         self.write('Remove command issued')
                     else:

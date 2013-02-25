@@ -37,12 +37,20 @@ class Database:
         else:
             return None, None
 
-
     def save_message(self, user_name, message):
         cursor = self.db_connection.cursor()
         query = "INSERT INTO messages (user_name,message,time_stamp) VALUES ('" + user_name + "','" + message + "'," + str(
             int(time.time())) + ")"
 
         cursor.execute(query)
+        line_id = self.db_connection.insert_id()
         self.db_connection.commit()
+        return line_id
+
+    def remove_message(self, message_id):
+        cursor = self.db_connection.cursor()
+        query = "DELETE FROM messages WHERE id=" + str(message_id)
+        cursor.execute(query)
+        self.db_connection.commit()
+
 
