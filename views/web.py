@@ -3,15 +3,15 @@ from core.storage import SOCKETS, CHAT
 from settings import SECRET_KEY
 import hashlib
 import time
-from database.wordpress import WordPress
+from database.maindb import Database
 import json
 
 
 class FrontPage(WebRequestHandler):
     def get(self):
         token = self.get_argument('csrf_token', None)
-        wp = WordPress()
-        user, mod = wp.get_username(token)
+        db = Database()
+        user, mod = db.get_username(token)
         self.render('chat.html', {'host': self.request.host, 'csrf_token': token, 'mod': mod})
 
 
@@ -22,8 +22,8 @@ class Pusher(WebRequestHandler):
         csrf_token = self.get_argument('csrf_token', None)
 
         if value is not None and action is not None and csrf_token is not None:
-            wp = WordPress()
-            user, mod = wp.get_username(csrf_token)
+            db = Database()
+            user, mod = db.get_username(csrf_token)
 
             if user is not None:
                 response = {'user': user, 'action': action, 'val': value, 'line': CHAT['line']}
@@ -32,6 +32,7 @@ class Pusher(WebRequestHandler):
                 if action == 'add':
                     for socket in SOCKETS:
                         socket.write_message(data)
+                        db.save_message(user, value)
 
                     newline = CHAT['line'] + 1
                     CHAT['line'] = newline
@@ -58,8 +59,8 @@ class AuthToken(WebRequestHandler):
 
         if secret_key == SECRET_KEY:
             token = hashlib.md5(str(time.time()) + username).hexdigest()
-            wp = WordPress()
-            wp.set_token(username, token, int(mod))
+            db = Database()
+            db.set_token(username, token, int(mod))
 
             response = {'status': 'ok', 'token': token}
             self.write(json.dumps(response))

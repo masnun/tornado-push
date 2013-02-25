@@ -1,7 +1,8 @@
 from database.core import connect_db
+import time
 
 
-class WordPress:
+class Database:
     def __init__(self):
         self.db_connection = connect_db('wordpress')
 
@@ -34,4 +35,14 @@ class WordPress:
         if data is not None:
             return data[0], data[2]
         else:
-            return None,None
+            return None, None
+
+
+    def save_message(self, user_name, message):
+        cursor = self.db_connection.cursor()
+        query = "INSERT INTO messages (user_name,message,time_stamp) VALUES ('" + user_name + "','" + message + "'," + str(
+            int(time.time())) + ")"
+
+        cursor.execute(query)
+        self.db_connection.commit()
+
