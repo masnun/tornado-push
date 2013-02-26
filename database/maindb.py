@@ -40,6 +40,7 @@ class Database:
     def save_message(self, user_name, message):
         cursor = self.db_connection.cursor()
         time_stamp = int(time.time())
+        message = self.db_connection.escape_string(message)
         query = "INSERT INTO messages (user_name,message,time_stamp) VALUES ('" + user_name + "','" + message + "'," + str(
             time_stamp) + ")"
 
