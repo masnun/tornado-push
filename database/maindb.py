@@ -55,3 +55,14 @@ class Database:
         self.db_connection.commit()
 
 
+    def get_messages(self, number):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM messages ORDER BY id DESC LIMIT 0," + str(number)
+        cursor.execute(query)
+        data = cursor.fetchall()
+        messages = []
+        for x in data:
+            messages.append(x)
+
+        messages.reverse()
+        return messages

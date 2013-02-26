@@ -4,8 +4,17 @@
 
     <style type="text/css">
         div#chat {
-            height:  100px;
+            height:  400px;
             overflow: auto;
+        }
+
+        div.message {
+            background-color:darkgrey ;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            height: 30px;
+            padding: 5px;
+            margin: 5px;
         }
     </style>
 
@@ -33,7 +42,7 @@
                         var del_link = '';
                     {% end %}
 
-                    html = $('<div id="' + data.line + '"><b>' + data.user + ':</b> <small>(' + data.date + ') </small>  '+ data.val + del_link + '</div>');
+                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b> <small>(' + data.date + ') </small>  '+ data.val + del_link + '</div>');
                     $("div#chat").append(html);
                 }
 
