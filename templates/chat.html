@@ -30,7 +30,7 @@
             ws.onmessage = function (event) {
                 var data = eval('(' + event.data + ')');
 
-                console.log(data);
+                $("span#online").html(data.online);
 
                 var action = data.action;
 
@@ -110,6 +110,9 @@
 </div>
 
 <br/><br/>
+
+<span id="online">0</span> people online!
+
 <strong>Message:</strong>
 <input type="text" id="message"/>
 <input type="hidden" id="csrf_token" value="{{ csrf_token }}">

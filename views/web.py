@@ -31,7 +31,8 @@ class Pusher(WebRequestHandler):
                 if action == 'add':
                     for socket in SOCKETS:
                         line_id, date = db.save_message(user, value)
-                        response = {'user': user, 'action': action, 'val': value, 'line': line_id, 'date': date}
+                        response = {'user': user, 'action': action, 'val': value, 'line': line_id, 'date': date,
+                                    'online': len(SOCKETS)}
                         data = json.dumps(response)
 
                         socket.write_message(data)
@@ -39,7 +40,7 @@ class Pusher(WebRequestHandler):
                     self.write('Added')
 
                 if action == 'remove':
-                    response = {'user': user, 'action': action, 'val': value}
+                    response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
                     data = json.dumps(response)
                     if int(mod) == 1:
                         for socket in SOCKETS:

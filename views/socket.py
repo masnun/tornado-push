@@ -15,7 +15,9 @@ class ClientSocket(WebSocketHandler):
 
         for msg in messages:
             response = {'user': msg[2], 'action': 'add', 'val': msg[1], 'line': msg[0],
-                        'date': str(datetime.datetime.fromtimestamp(msg[3]).strftime("%B %d, %Y"))}
+                        'date': str(datetime.datetime.fromtimestamp(msg[3]).strftime("%B %d, %Y")),
+                        'online': len(SOCKETS)}
+
             data = json.dumps(response)
             self.write_message(data)
 
