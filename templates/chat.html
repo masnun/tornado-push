@@ -16,6 +16,11 @@
             padding: 5px;
             margin: 5px;
         }
+
+        a.close_btn {
+            float: right;
+        }
+
     </style>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -37,12 +42,12 @@
                 if (action == "add") {
 
                     {% if mod == 1 %}
-                        var del_link = ' <a href="" onclick="removeMessage('+ data.line +'); return false;">x</a>';
+                        var del_link = ' <a class="close_btn" onclick="removeMessage('+ data.line +'); return false;">x</a>';
                     {% else %}
                         var del_link = '';
                     {% end %}
 
-                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b> <small>(' + data.date + ') </small>  '+ data.val + del_link + '</div>');
+                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b> <!-- <small>(' + data.date + ') </small> -->  '+ data.val + del_link + '</div>');
                     $("div#chat").append(html);
                 }
 
