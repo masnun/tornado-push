@@ -1,0 +1,86 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        connect();
+    });
+
+    function connect() {
+        var ws = new WebSocket("ws://localhost:8888/socket");
+        ws.onmessage = function (event) {
+            var data = eval('(' + event.data + ')');
+            console.log(data);
+            var action = data.action;
+            if (action == "add") {
+                var del_link = ' <a href="" onclick="removeMessage(' + data.line + '); return false;">x</a>';
+                //var del_link = '';
+                html = $('<div id="' + data.line + '"><b>' + data.user + ':</b> ' + data.val + del_link + '</div>');
+                $("div#chat").append(html);
+            }
+
+            if (action == "remove") {
+                $("div#" + data.val).remove();
+            }
+
+
+        }
+
+        ws.onclose = function () {
+            $("div#chat").append($('<b>Connection Terminated</b><br/><br/>'));
+            $("input#connect_btn").show();
+        }
+
+        $("div#chat").append($('<b>Connection Stabilished</b><br/><br/>'));
+        $("input#connect_btn").hide();
+    }
+
+    function postMessage() {
+        var msg = $("#message").val();
+        var token = $("input#csrf_token").val()
+
+        $.ajax({
+            url: 'http://localhost:8888/push',
+            method: 'POST',
+            data: {
+                action: 'add',
+                csrf_token: token,
+                val: msg
+            },
+            success: function (re) {
+                console.log("Data pushed");
+                $("#message").val('')
+            }
+        });
+    }
+
+
+    function removeMessage(id) {
+        var token = $("input#csrf_token").val()
+
+        $.ajax({
+            url: 'http://localhost:8888/push',
+            method: 'POST',
+            data: {
+                action: 'remove',
+                csrf_token: token,
+                val: id
+            },
+            success: function (re) {
+                console.log("Data pushed");
+                $("#message").val('')
+            }
+        });
+    }
+
+</script>
+
+<div id="chat">
+
+</div>
+
+<br/><br/>
+<strong>Message:</strong>
+<input type="text" id="message"/>
+<input type="hidden" id="csrf_token" value="1">
+<input type="button" onclick="postMessage()" value="SEND"/>
+<input type="button" id="connect_btn" onclick="connect()" value="CONNECT"/>
