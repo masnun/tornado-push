@@ -47,11 +47,12 @@
 
                     html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  '+ data.val + '<span class="right_float">' + del_link + '</span></div>');
                     $("div#chat").append(html);
-
+                    scrollChat();
                 }
 
                 if (action == "remove") {
                     $("div#" + data.val).remove();
+                    scrollChat();
                 }
 
 
@@ -102,6 +103,10 @@
                     $("#message").val('')
                 }
             });
+        }
+
+        function scrollChat() {
+            $("div#chat").scrollTop( $("div#chat").height() + ($("div.message").length * 40)  );
         }
 
     </script>
