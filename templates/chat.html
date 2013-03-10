@@ -25,7 +25,18 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+            //connect to websocket
             connect();
+
+            // handle enter key
+            $("#message").keyup(function(event){
+                if(event.keyCode == 13){
+                    postMessage();
+                }
+            });
+
+
         });
 
         function connect() {
