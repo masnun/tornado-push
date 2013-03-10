@@ -9,15 +9,13 @@
         }
 
         div.message {
-            background-color:darkgrey ;
-            -moz-border-radius: 5px;
-            -webkit-border-radius: 5px;
+            background-color: darkgrey ;
             height: auto;
-            padding: 5px;
-            margin: 5px;
+            padding: 10px;
+            margin: 3px;
         }
 
-        a.close_btn {
+        span.right_float {
             float: right;
         }
 
@@ -42,13 +40,14 @@
                 if (action == "add") {
 
                     {% if mod == 1 %}
-                        var del_link = ' <a class="close_btn" onclick="removeMessage('+ data.line +'); return false;">x</a>';
+                        var del_link = ' <a href="javascript::void(0)" onclick="removeMessage('+ data.line +');">x</a>';
                     {% else %}
                         var del_link = '';
                     {% end %}
 
-                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b> <!-- <small>(' + data.date + ') </small> -->  '+ data.val + del_link + '</div>');
+                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  '+ data.val + '<span class="right_float">' + del_link + '</span></div>');
                     $("div#chat").append(html);
+
                 }
 
                 if (action == "remove") {
