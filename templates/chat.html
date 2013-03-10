@@ -51,7 +51,7 @@
                 if (action == "add") {
 
                     {% if mod == 1 %}
-                        var del_link = ' <a href="javascript::void(0)" onclick="removeMessage('+ data.line +');">x</a>';
+                        var del_link = ' <a href="javascript:void(0)" onclick="removeMessage('+ data.line +');">x</a>';
                     {% else %}
                         var del_link = '';
                     {% end %}
@@ -105,9 +105,9 @@
                 url: 'http://{{ host }}/push',
                 method: 'POST',
                 data: {
-                    action: 'remove',
-                    csrf_token: token,
-                    val: id
+                    'action': 'remove',
+                    'csrf_token': token,
+                    'val': id
                 },
                 success: function (re) {
                     console.log("Data pushed");
