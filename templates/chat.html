@@ -4,7 +4,7 @@
 
     <style type="text/css">
         div#chat {
-            height:  300px;
+            height:  250px;
             overflow: auto;
         }
 
@@ -118,12 +118,9 @@
 
 </div>
 
-<br/><br/>
+<span id="online">0</span> people online! <br/>
 
-<span id="online">0</span> people online!
-
-<strong>Message:</strong>
-<input type="text" id="message"/>
+<textarea id="message"></textarea><br/>
 <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 <input type="button" onclick="postMessage()" value="SEND"/>
 <input type="button" id="connect_btn" onclick="connect()" value="CONNECT"/>
