@@ -21,6 +21,15 @@ class Pusher(WebRequestHandler):
         action = self.get_argument('action', None)
         csrf_token = self.get_argument('csrf_token', None)
 
+        # Sanitize Input
+        if value is not None:
+            restricted_words = ['<script>']
+            for x in restricted_words:
+                value = value.replace(x, '')
+
+        if value == '':
+            value = None
+
         if value is not None and action is not None and csrf_token is not None:
             db = Database()
             user, mod = db.get_username(csrf_token)
