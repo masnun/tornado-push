@@ -1,5 +1,7 @@
 from views.web import *
 from views.socket import *
+from settings import STATIC_PATH
+from tornado.web import StaticFileHandler
 
 
 urlpatterns = [
@@ -7,4 +9,5 @@ urlpatterns = [
     (r"/socket", ClientSocket),
     (r"/push", Pusher),
     (r"/auth", AuthToken),
+    (r'/static/(.*)', StaticFileHandler, {'path': STATIC_PATH}),
 ]
