@@ -1,0 +1,15 @@
+div#chat {
+    height:  250px;
+    overflow: auto;
+}
+
+div.message {
+    background-color: darkgrey ;
+    height: auto;
+    padding: 10px;
+    margin: 3px;
+}
+
+span.right_float {
+    float: right;
+}
