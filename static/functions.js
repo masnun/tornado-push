@@ -10,7 +10,7 @@ function connect() {
                 if (action == "add") {
 
                     if(mod_status == 1) {
-                        var del_link = ' <a href="javascript:void(0)" onclick="removeMessage('+ data.line +');">x</a>';
+                        var del_link = ' <a href="javascript:void(0)" onclick="removeMessage('+ data.line +');"><span class="ui-icon ui-icon-trash"></span></a>';
                     } else {
                         var del_link = '';
                     }
