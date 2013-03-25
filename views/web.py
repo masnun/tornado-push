@@ -23,7 +23,7 @@ class Pusher(WebRequestHandler):
 
         # Sanitize Input
         if value is not None:
-            restricted_words = ['<script>']
+            restricted_words = ['<script>','<p>','</p>']
             for x in restricted_words:
                 value = value.replace(x, '')
 
