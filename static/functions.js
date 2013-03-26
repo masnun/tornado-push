@@ -10,12 +10,16 @@ function connect() {
                 if (action == "add") {
 
                     if(mod_status == 1) {
-                        var del_link = ' <a href="javascript:void(0)" onclick="removeMessage('+ data.line +');"><span class="ui-icon ui-icon-trash"></span></a>';
+                        var del_link = ' <a href="javascript:void(0)" onclick="removeMessage('+ data.line +');"><span style="float:left;" class="ui-icon ui-icon-trash"></span></a>';
+                        var del_all_link = ' <a href="javascript:void(0)" onclick="removeAllMessages(\''+ data.user +'\');"><span style="float:left;" class="ui-icon ui-icon-alert"></span></a>';
+                        var ban_link = ' <a href="javascript:void(0)" onclick="banUser(\''+ data.user +'\');"><span style="float:left;" class="ui-icon ui-icon-circle-minus"></span></a>';
                     } else {
                         var del_link = '';
+                        var del_all_link = '';
+                        var ban_link = '';
                     }
 
-                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  '+ data.val + '<span class="right_float">' + del_link + '</span></div>');
+                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  '+ data.val + '<span class="right_float">' + del_link + del_all_link + ban_link + '</span></div>');
                     $("div#chat").append(html);
                     scrollChat();
                 }
@@ -56,8 +60,19 @@ function connect() {
             });
         }
 
+        function banUser(username) {
+            alert('ban ' + username)
+        }
+
+        function removeAllMessages(username) {
+            alert('remove all' + username)
+        }
 
         function removeMessage(id) {
+            if(!confirm('You are about to delete this message!')) {
+                return false;
+            }
+
             var token =  $("input#csrf_token").val();
 
             $.ajax({

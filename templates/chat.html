@@ -15,9 +15,11 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script type="text/javascript" src="/static/tinymce/jscripts/tiny_mce/jquery.tinymce.js"></script>
     <script type="text/javascript" src="/static/jquery-ui/js/jquery-ui-1.10.2.custom.min.js"></script>
+
     <script src="/static/functions.js"></script>
     <script src="/static/tinymce.js"></script>
     <script src="/static/main.js"></script>
+
 
 
 </head>
@@ -33,6 +35,15 @@
 <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 <input type="button" onclick="postMessage()" value="SEND"/>
 <input type="button" id="connect_btn" onclick="connect()" value="CONNECT"/>
+
+
+<!-- DIALOGS -->
+
+<div class="dialog-hidden" id="delete-dialog" title="Delete">
+    <p>Delete Messages?</p>
+</div>
+
+
 
 
 </body>
