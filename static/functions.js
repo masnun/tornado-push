@@ -61,11 +61,47 @@ function connect() {
         }
 
         function banUser(username) {
-            alert('ban ' + username)
+            if(!confirm('You are about to ban ' + username)) {
+                return false;
+            }
+
+            var token =  $("input#csrf_token").val();
+
+            $.ajax({
+                url: 'http://' + server_host + '/push',
+                method: 'POST',
+                data: {
+                    'action': 'ban',
+                    'csrf_token': token,
+                    'val': username
+                },
+                success: function (re) {
+                    console.log("Data pushed");
+                    $("#message").val('')
+                }
+            });
         }
 
         function removeAllMessages(username) {
-            alert('remove all' + username)
+            if(!confirm('You are about to remove all messages from ' + username)) {
+                return false;
+            }
+
+            var token =  $("input#csrf_token").val();
+
+            $.ajax({
+                url: 'http://' + server_host + '/push',
+                method: 'POST',
+                data: {
+                    'action': 'remove_all',
+                    'csrf_token': token,
+                    'val': username
+                },
+                success: function (re) {
+                    console.log("Data pushed");
+                    $("#message").val('')
+                }
+            });
         }
 
         function removeMessage(id) {
