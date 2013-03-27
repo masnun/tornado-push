@@ -38,16 +38,19 @@ class Database:
             return None, None
 
     def save_message(self, user_name, message):
-        cursor = self.db_connection.cursor()
-        time_stamp = int(time.time())
-        message = self.db_connection.escape_string(message)
-        query = "INSERT INTO messages (user_name,message,time_stamp) VALUES ('" + user_name + "','" + message + "'," + str(
-            time_stamp) + ")"
+        if self.is_banned(user_name):
+            return False, False
+        else:
+            cursor = self.db_connection.cursor()
+            time_stamp = int(time.time())
+            message = self.db_connection.escape_string(message)
+            query = "INSERT INTO messages (user_name,message,time_stamp) VALUES ('" + user_name + "','" + message + "'," + str(
+                time_stamp) + ")"
 
-        cursor.execute(query)
-        line_id = self.db_connection.insert_id()
-        self.db_connection.commit()
-        return line_id, str(datetime.datetime.fromtimestamp(time_stamp).strftime("%B %d, %Y"))
+            cursor.execute(query)
+            line_id = self.db_connection.insert_id()
+            self.db_connection.commit()
+            return line_id, str(datetime.datetime.fromtimestamp(time_stamp).strftime("%B %d, %Y"))
 
     def remove_message(self, message_id):
         cursor = self.db_connection.cursor()
@@ -79,4 +82,17 @@ class Database:
         query = "INSERT INTO banned_users (username) VALUES ('" + username + "')"
         cursor.execute(query)
         self.db_connection.commit()
+
+
+    def is_banned(self, username):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM users WHERE user_name='" + str(
+            username) + "' and user_name in (SELECT username FROM banned_users)"
+        cursor.execute(query)
+        data = cursor.fetchall()
+
+        if len(data) > 0:
+            return True
+        else:
+            return False
 

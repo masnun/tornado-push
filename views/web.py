@@ -12,7 +12,12 @@ class FrontPage(WebRequestHandler):
         token = self.get_argument('csrf_token', None)
         db = Database()
         user, mod = db.get_username(token)
-        self.render('chat.html', {'host': self.request.host, 'csrf_token': token, 'mod': mod})
+        if user:
+            self.render('chat.html', {'host': self.request.host, 'csrf_token': token, 'mod': mod})
+        else:
+            self.write("User could not be verified <br/>")
+            if token == 'banned':
+                self.write('You are banned!')
 
 
 class Pusher(WebRequestHandler):
@@ -93,15 +98,20 @@ class AuthToken(WebRequestHandler):
         secret_key = self.get_argument('secret_key', None)
         username = self.get_argument('username', None)
         mod = self.get_argument('mod', 0)
+        db = Database()
 
-        if secret_key == SECRET_KEY:
-            token = hashlib.md5(str(time.time()) + username).hexdigest()
-            db = Database()
-            db.set_token(username, token, int(mod))
-
-            response = {'status': 'ok', 'token': token}
+        if db.is_banned(username):
+            response = {'status': 'ok', 'token': 'banned'}
             self.write(json.dumps(response))
-
         else:
-            response = {'status': 'error', 'token': None}
-            self.write(json.dumps(response))
+            if secret_key == SECRET_KEY:
+                token = hashlib.md5(str(time.time()) + username).hexdigest()
+
+                db.set_token(username, token, int(mod))
+
+                response = {'status': 'ok', 'token': token}
+                self.write(json.dumps(response))
+
+            else:
+                response = {'status': 'error', 'token': None}
+                self.write(json.dumps(response))
