@@ -1,5 +1,6 @@
 from database.core import connect_db
-import time, datetime
+import time
+import datetime
 
 
 class Database:
@@ -16,7 +17,6 @@ class Database:
             "INSERT INTO users (user_name,csrf_token,`mod`) VALUES ('" + str(username) + "','" + str(
                 token) + "','" + str(mod) + "') ")
         self.db_connection.commit()
-
 
     def get_token(self, username):
         cursor = self.db_connection.cursor()
@@ -55,7 +55,6 @@ class Database:
         cursor.execute(query)
         self.db_connection.commit()
 
-
     def get_messages(self, number):
         cursor = self.db_connection.cursor()
         query = "SELECT * FROM messages ORDER BY id DESC LIMIT 0," + str(number)
@@ -71,6 +70,13 @@ class Database:
     def remove_all_messages(self, username):
         cursor = self.db_connection.cursor()
         query = "DELETE FROM messages WHERE user_name='" + str(username) + "'"
+        cursor.execute(query)
+        self.db_connection.commit()
+
+    def ban_user(self, username):
+        cursor = self.db_connection.cursor()
+        username = self.db_connection.escape_string(username)
+        query = "INSERT INTO banned_users (username) VALUES ('" + username + "')"
         cursor.execute(query)
         self.db_connection.commit()
 

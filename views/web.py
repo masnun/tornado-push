@@ -69,6 +69,18 @@ class Pusher(WebRequestHandler):
                     else:
                         self.write('Permission denied')
 
+                # Ban user
+                if action == 'ban':
+                    response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
+                    data = json.dumps(response)
+                    if int(mod) == 1:
+                        for socket in SOCKETS:
+                            db.ban_user(value)
+                            socket.write_message(data)
+                        self.write('Removed all messages')
+                    else:
+                        self.write('Permission denied')
+
 
             else:
                 self.write('Invalid Value')
