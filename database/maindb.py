@@ -67,3 +67,10 @@ class Database:
 
         messages.reverse()
         return messages
+
+    def remove_all_messages(self, username):
+        cursor = self.db_connection.cursor()
+        query = "DELETE FROM messages WHERE user_name='" + str(username) + "'"
+        cursor.execute(query)
+        self.db_connection.commit()
+

@@ -23,7 +23,7 @@ class Pusher(WebRequestHandler):
 
         # Sanitize Input
         if value is not None:
-            restricted_words = ['<script>','<p>','</p>']
+            restricted_words = ['<script>', '<p>', '</p>']
             for x in restricted_words:
                 value = value.replace(x, '')
 
@@ -35,19 +35,17 @@ class Pusher(WebRequestHandler):
             user, mod = db.get_username(csrf_token)
 
             if user is not None:
-
-
+                # Add message
                 if action == 'add':
                     for socket in SOCKETS:
                         line_id, date = db.save_message(user, value)
-                        response = {'user': user, 'action': action, 'val': value, 'line': line_id, 'date': date,
+                        response = {'user': user, 'action': action, 'val': value, 'line': line_id,
                                     'online': len(SOCKETS)}
                         data = json.dumps(response)
-
                         socket.write_message(data)
-
                     self.write('Added')
 
+                #Remove message
                 if action == 'remove':
                     response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
                     data = json.dumps(response)
@@ -58,6 +56,20 @@ class Pusher(WebRequestHandler):
                         self.write('Remove command issued')
                     else:
                         self.write('Permission denied')
+
+                # Remove all messages
+                if action == 'remove_all':
+                    response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
+                    data = json.dumps(response)
+                    if int(mod) == 1:
+                        for socket in SOCKETS:
+                            db.remove_all_messages(value)
+                            socket.write_message(data)
+                        self.write('Removed all messages')
+                    else:
+                        self.write('Permission denied')
+
+
             else:
                 self.write('Invalid Value')
         else:
