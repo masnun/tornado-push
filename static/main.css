@@ -13,3 +13,18 @@ div.message {
 span.right_float {
     float: right;
 }
+
+
+/** overrides **/
+
+.ui-widget {
+    font-size: 12px;
+}
+
+.ui-tabs {
+    padding: 0;
+}
+
+.ui-tabs .ui-tabs-panel {
+    padding: 1px;
+}
