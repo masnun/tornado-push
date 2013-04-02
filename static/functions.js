@@ -19,7 +19,9 @@ function connect() {
                         var ban_link = '';
                     }
 
-                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  '+ data.val + '<span class="right_float">' + del_link + del_all_link + ban_link + '</span></div>');
+                    var msg_link = ' <a href="javascript:void(0)" onclick="sendPvtMsg(\''+ data.user +'\');"><span style="float:left;" class="ui-icon ui-icon-comment"></span></a>';
+
+                    html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  '+ data.val + '<span class="right_float">' + msg_link + del_link + del_all_link + ban_link  + '</span></div>');
                     $("div#chat").append(html);
                     scrollChat();
                 }
@@ -102,6 +104,10 @@ function connect() {
                     $("#message").val('')
                 }
             });
+        }
+
+        function sendPvtMsg(username) {
+            alert(username);
         }
 
         function removeMessage(id) {
