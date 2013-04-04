@@ -9,6 +9,8 @@ function connect() {
 
         if (action == "add") {
 
+            addToPrivateChat(data.user, {});
+
             if (mod_status == 1) {
                 var del_link = ' <a href="javascript:void(0)" onclick="removeMessage(' + data.line + ');"><span style="float:left;" class="ui-icon ui-icon-trash"></span></a>';
                 var del_all_link = ' <a href="javascript:void(0)" onclick="removeAllMessages(\'' + data.user + '\');"><span style="float:left;" class="ui-icon ui-icon-alert"></span></a>';
@@ -135,3 +137,16 @@ function removeMessage(id) {
 function scrollChat() {
     $("div#chat").scrollTop($("div#chat").height() + ($("div.message").length * 40));
 }
+
+function addToPrivateChat(username, data) {
+
+    if (window.tabs.find('div#' + username).length < 1) {
+        // user tab doesn't exist - create it
+        var ul = tabs.find("ul");
+        $("<li><a href='#" + username + "'>" + username + "</a></li>").appendTo(ul);
+        $("<div id='" + username + "'></div>").appendTo(tabs);
+        tabs.tabs("refresh");
+    }
+
+}
+

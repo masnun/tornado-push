@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    var tabs = $( "#tabs" ).tabs();
+    window.tabs = $( "#tabs" ).tabs();
 
     $('.dialog-hidden').hide();
     connect();
