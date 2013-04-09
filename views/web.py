@@ -13,7 +13,7 @@ class FrontPage(WebRequestHandler):
         db = Database()
         user, mod = db.get_username(token)
         if user:
-            self.render('chat.html', {'host': self.request.host, 'csrf_token': token, 'mod': mod})
+            self.render('chat.html', {'host': self.request.host, 'user': user, 'csrf_token': token, 'mod': mod})
         else:
             self.write("User could not be verified <br/>")
             if token == 'banned':
@@ -42,11 +42,24 @@ class Pusher(WebRequestHandler):
             if user is not None:
                 # Add message
                 if action == 'add':
+                    line_id, date = db.save_message(user, value)
+                    response = {'user': user, 'action': action, 'val': value, 'line': line_id,
+                                'online': len(SOCKETS)}
+                    data = json.dumps(response)
+
                     for socket in SOCKETS:
-                        line_id, date = db.save_message(user, value)
-                        response = {'user': user, 'action': action, 'val': value, 'line': line_id,
-                                    'online': len(SOCKETS)}
-                        data = json.dumps(response)
+                        socket.write_message(data)
+                    self.write('Added')
+
+
+                # Add private message
+                if action == 'pvt_msg':
+                    username = self.get_argument('username', None)
+                    line_id, date = db.save_pvt_message(user, username, value)
+                    response = {'user': user, 'action': action, 'val': value, 'username': username, 'line': line_id,
+                                'online': len(SOCKETS)}
+                    data = json.dumps(response)
+                    for socket in SOCKETS:
                         socket.write_message(data)
                     self.write('Added')
 
@@ -55,8 +68,8 @@ class Pusher(WebRequestHandler):
                     response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
                     data = json.dumps(response)
                     if int(mod) == 1:
+                        db.remove_message(value)
                         for socket in SOCKETS:
-                            db.remove_message(value)
                             socket.write_message(data)
                         self.write('Remove command issued')
                     else:
@@ -67,8 +80,8 @@ class Pusher(WebRequestHandler):
                     response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
                     data = json.dumps(response)
                     if int(mod) == 1:
+                        db.remove_all_messages(value)
                         for socket in SOCKETS:
-                            db.remove_all_messages(value)
                             socket.write_message(data)
                         self.write('Removed all messages')
                     else:
@@ -79,8 +92,8 @@ class Pusher(WebRequestHandler):
                     response = {'user': user, 'action': action, 'val': value, 'online': len(SOCKETS)}
                     data = json.dumps(response)
                     if int(mod) == 1:
+                        db.ban_user(value)
                         for socket in SOCKETS:
-                            db.ban_user(value)
                             socket.write_message(data)
                         self.write('Removed all messages')
                     else:

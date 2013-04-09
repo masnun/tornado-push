@@ -109,7 +109,23 @@ function removeAllMessages(username) {
 }
 
 function sendPvtMsg(username) {
-    alert(username);
+    var msg = $("#message").val();
+    var token = $("input#csrf_token").val()
+
+    $.ajax({
+        url: 'http://' + server_host + '/push',
+        method: 'POST',
+        data: {
+            action: 'pvt_msg',
+            csrf_token: token,
+            val: msg,
+            username: username
+        },
+        success: function (re) {
+            console.log("Data pushed");
+            $("#message").val('')
+        }
+    });
 }
 
 function removeMessage(id) {
