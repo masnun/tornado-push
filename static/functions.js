@@ -148,5 +148,10 @@ function addToPrivateChat(username, data) {
         tabs.tabs("refresh");
     }
 
+    // handle data
+    var html = $('<div class="message"><b><u>' + data.user_name + ':</u></b>  ' + data.val + '</div>');
+    $('div#').append(html);
+
+
 }
 

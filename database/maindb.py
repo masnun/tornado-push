@@ -52,6 +52,21 @@ class Database:
             self.db_connection.commit()
             return line_id, str(datetime.datetime.fromtimestamp(time_stamp).strftime("%B %d, %Y"))
 
+    def save_pvt_message(self, user_name, to_user, message):
+        if self.is_banned(user_name):
+            return False, False
+        else:
+            cursor = self.db_connection.cursor()
+            timestamp = int(time.time())
+            message = self.db_connection.escape_string(message)
+            query = "INSERT INTO private_messages (username,message,to_user,timestamp) VALUES ('" + user_name + "','" + message + "','" + to_user + "'," + str(
+                timestamp) + ")"
+
+            cursor.execute(query)
+            line_id = self.db_connection.insert_id()
+            self.db_connection.commit()
+            return line_id, str(datetime.datetime.fromtimestamp(timestamp).strftime("%B %d, %Y"))
+
     def remove_message(self, message_id):
         cursor = self.db_connection.cursor()
         query = "DELETE FROM messages WHERE id=" + str(message_id)
