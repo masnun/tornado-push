@@ -9,7 +9,7 @@ function connect() {
 
         if (action == "add") {
 
-            addToPrivateChat(data.user, {});
+            // addToPrivateChat(data.user, {});
 
             if (mod_status == 1) {
                 var del_link = ' <a href="javascript:void(0)" onclick="removeMessage(' + data.line + ');"><span style="float:left;" class="ui-icon ui-icon-trash"></span></a>';
@@ -21,7 +21,7 @@ function connect() {
                 var ban_link = '';
             }
 
-            var msg_link = ' <a href="javascript:void(0)" onclick="sendPvtMsg(\'' + data.user + '\');"><span style="float:left;" class="ui-icon ui-icon-comment"></span></a>';
+            var msg_link = ' <a href="javascript:void(0)" onclick="startPrivateChat(\'' + data.user + '\');"><span style="float:left;" class="ui-icon ui-icon-comment"></span></a>';
 
             html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  ' + data.val + '<span class="right_float">' + msg_link + del_link + del_all_link + ban_link + '</span></div>');
             $("div#chat").append(html);
@@ -49,13 +49,20 @@ function postMessage() {
     var msg = $("#message").val();
     var token = $("input#csrf_token").val()
 
+    if (window.private_chat == null) {
+        var action = 'add';
+    } else {
+        var action = 'pvt_msg';
+    }
+
     $.ajax({
         url: 'http://' + server_host + '/push',
         method: 'POST',
         data: {
-            action: 'add',
+            action: action,
             csrf_token: token,
-            val: msg
+            val: msg,
+            username: window.private_chat
         },
         success: function (re) {
             console.log("Data pushed");
@@ -108,25 +115,6 @@ function removeAllMessages(username) {
     });
 }
 
-function sendPvtMsg(username) {
-    var msg = $("#message").val();
-    var token = $("input#csrf_token").val()
-
-    $.ajax({
-        url: 'http://' + server_host + '/push',
-        method: 'POST',
-        data: {
-            action: 'pvt_msg',
-            csrf_token: token,
-            val: msg,
-            username: username
-        },
-        success: function (re) {
-            console.log("Data pushed");
-            $("#message").val('')
-        }
-    });
-}
 
 function removeMessage(id) {
     if (!confirm('You are about to delete this message!')) {
@@ -156,6 +144,24 @@ function scrollChat() {
 
 function addToPrivateChat(username, data) {
 
+    /*
+     if (window.tabs.find('div#' + username).length < 1) {
+     // user tab doesn't exist - create it
+     var ul = tabs.find("ul");
+     $("<li><a href='#" + username + "'>" + username + "</a></li>").appendTo(ul);
+     $("<div id='" + username + "'></div>").appendTo(tabs);
+     tabs.tabs("refresh");
+     }
+
+     // handle data
+     var html = $('<div class="message"><b><u>' + data.user_name + ':</u></b>  ' + data.val + '</div>');
+     $('div#').append(html);
+     */
+
+}
+
+
+function startPrivateChat(username) {
     if (window.tabs.find('div#' + username).length < 1) {
         // user tab doesn't exist - create it
         var ul = tabs.find("ul");
@@ -163,11 +169,5 @@ function addToPrivateChat(username, data) {
         $("<div id='" + username + "'></div>").appendTo(tabs);
         tabs.tabs("refresh");
     }
-
-    // handle data
-    var html = $('<div class="message"><b><u>' + data.user_name + ':</u></b>  ' + data.val + '</div>');
-    $('div#').append(html);
-
-
 }
 
