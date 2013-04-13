@@ -7,9 +7,11 @@ function connect() {
 
         var action = data.action;
 
-        if (action == "add") {
+        if (action == "pvt_msg") {
+            addToPrivateChat(data)
+        }
 
-            // addToPrivateChat(data.user, {});
+        if (action == "add") {
 
             if (mod_status == 1) {
                 var del_link = ' <a href="javascript:void(0)" onclick="removeMessage(' + data.line + ');"><span style="float:left;" class="ui-icon ui-icon-trash"></span></a>';
@@ -142,21 +144,26 @@ function scrollChat() {
     $("div#chat").scrollTop($("div#chat").height() + ($("div.message").length * 40));
 }
 
-function addToPrivateChat(username, data) {
+function addToPrivateChat(data) {
+    var me = window.user
 
-    /*
-     if (window.tabs.find('div#' + username).length < 1) {
-     // user tab doesn't exist - create it
-     var ul = tabs.find("ul");
-     $("<li><a href='#" + username + "'>" + username + "</a></li>").appendTo(ul);
-     $("<div id='" + username + "'></div>").appendTo(tabs);
-     tabs.tabs("refresh");
-     }
+    if(data['username'] == me) {
+        var username = data['user'];
+    } else {
+        var username = data['username'];
+    }
 
-     // handle data
-     var html = $('<div class="message"><b><u>' + data.user_name + ':</u></b>  ' + data.val + '</div>');
-     $('div#').append(html);
-     */
+    if (window.tabs.find('div#' + username).length < 1) {
+        // user tab doesn't exist - create it
+        var ul = tabs.find("ul");
+        $("<li><a href='#" + username + "'>" + username + "</a></li>").appendTo(ul);
+        $("<div id='" + username + "'></div>").appendTo(tabs);
+        tabs.tabs("refresh");
+    }
+
+    // handle data
+    var html = $('<div class="message"><b><u>' + username + ':</u></b>  ' + data.val + '</div>');
+    $('div#' + username).append(html);
 
 }
 
