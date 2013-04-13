@@ -165,6 +165,8 @@ function addToPrivateChat(data) {
     var html = $('<div class="message"><b><u>' + username + ':</u></b>  ' + data.val + '</div>');
     $('div#' + username).append(html);
 
+    blinkTab(username);
+
 }
 
 
@@ -172,9 +174,23 @@ function startPrivateChat(username) {
     if (window.tabs.find('div#' + username).length < 1) {
         // user tab doesn't exist - create it
         var ul = tabs.find("ul");
-        $("<li><a href='#" + username + "'>" + username + "</a></li>").appendTo(ul);
+        $("<li><a id href='#" + username + "'>" + username + "</a></li>").appendTo(ul);
         $("<div id='" + username + "'></div>").appendTo(tabs);
         tabs.tabs("refresh");
+
+        selectTab(username);
+
+
     }
 }
+
+function selectTab(username) {
+    $("#tabs").tabs("option", "active", $("#" + username + "Selector").index());
+}
+
+function blinkTab(tabName) {
+    var dom = $('a[href="#'+ tabName +'"]')
+    dom.effect("pulsate", {}, 5000);
+}
+
 
