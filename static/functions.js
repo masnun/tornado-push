@@ -27,10 +27,19 @@ function connect() {
 
             var msg_link = ' <a href="javascript:void(0)" onclick="startPrivateChat(\'' + data.user + '\');"><span style="float:left;" class="ui-icon ui-icon-comment"></span></a>';
 
-            html = $('<div class="message" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  ' + data.val + '<span class="right_float">' + msg_link + del_link + del_all_link + ban_link + '</span></div>');
+            html = $('<div class="message" user-id="'+ data.user + '" id="' + data.line + '"><b><u>' + data.user + ':</u></b>  ' + data.val + '<span class="right_float">' + msg_link + del_link + del_all_link + ban_link + '</span></div>');
             $("div#chat").append(html);
             scrollChat();
         }
+
+        if(action == 'remove_all') {
+            all_messages = $("div[user-id='"+ data['user'] +"']");
+            for(var i = 0 ; i < all_messages.length ; i++ ) {
+                $(all_messages[i]).remove();
+            }
+        }
+
+
 
         if (action == "remove") {
             $("div#" + data.val).remove();
