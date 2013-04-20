@@ -3,6 +3,8 @@ function connect() {
     ws.onmessage = function (event) {
         var data = eval('(' + event.data + ')');
 
+        //console.log(data);
+
         $("span#online").html(data.online);
 
         var action = data.action;
@@ -162,7 +164,7 @@ function addToPrivateChat(data) {
     }
 
     // handle data
-    var html = $('<div class="message"><b><u>' + username + ':</u></b>  ' + data.val + '</div>');
+    var html = $('<div class="message"><b><u>' + data['user'] + ':</u></b>  ' + data.val + '</div>');
     $('div#' + username).append(html);
 
     blinkTab(username);
