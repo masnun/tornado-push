@@ -111,3 +111,11 @@ class Database:
         else:
             return False
 
+    def get_banned_users(self):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM banned_users"
+        cursor.execute(query)
+        data = cursor.fetchall()
+
+        return data
+

@@ -6,9 +6,6 @@
     <link href="/static/main.css" rel="stylesheet">
 
     <script type="text/javascript">
-        var server_host = '{{ host }}';
-        var mod_status = {{ mod }} ;
-        var user = '{{ user }}';
 
     </script>
 
@@ -29,34 +26,8 @@
 </head>
 <body>
 
-<a href="/bans">Mod</a>
-
-<div id="tabs">
-    <ul>
-        <li><a href="#chat">Chat</a></li>
-    </ul>
-
-    <div id="chat"></div>
-
-</div>
-
-<br/>
-<span id="online">0</span> people online! <br/>
-
-<textarea id="message" style="width: 200px"></textarea><br/>
-<input type="hidden" id="csrf_token" value="{{ csrf_token }}">
-<input type="button" onclick="postMessage()" value="SEND"/>
-<input type="button" id="connect_btn" onclick="connect()" value="CONNECT"/>
-
-
-<!-- DIALOGS -->
-
-<div class="dialog-hidden" id="delete-dialog" title="Delete">
-    <p>Delete Messages?</p>
-</div>
-
-
-
+ok
+{{ bans }}
 
 </body>
 </html>

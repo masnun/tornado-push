@@ -128,3 +128,13 @@ class AuthToken(WebRequestHandler):
             else:
                 response = {'status': 'error', 'token': None}
                 self.write(json.dumps(response))
+
+class BanManager(WebRequestHandler):
+    def get(self):
+        token = self.get_argument('csrf_token', None)
+        db = Database()
+        user, mod = db.get_username(token)
+
+        #if mod:
+        bans = db.get_banned_users()
+        self.render('bans.html',{'bans': bans})

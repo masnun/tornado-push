@@ -9,5 +9,6 @@ urlpatterns = [
     (r"/socket", ClientSocket),
     (r"/push", Pusher),
     (r"/auth", AuthToken),
+    (r"/bans", BanManager),
     (r'/static/(.*)', StaticFileHandler, {'path': STATIC_PATH}),
 ]
