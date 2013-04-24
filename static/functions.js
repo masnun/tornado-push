@@ -3,7 +3,7 @@ function connect() {
     ws.onmessage = function (event) {
         var data = eval('(' + event.data + ')');
 
-        //console.log(data);
+        console.log(data);
 
         $("span#online").html(data.online);
 
@@ -33,7 +33,7 @@ function connect() {
         }
 
         if(action == 'remove_all') {
-            all_messages = $("div[user-id='"+ data['user'] +"']");
+            all_messages = $("div[user-id='"+ data['val'] +"']");
             for(var i = 0 ; i < all_messages.length ; i++ ) {
                 $(all_messages[i]).remove();
             }
