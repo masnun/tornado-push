@@ -119,3 +119,9 @@ class Database:
 
         return data
 
+    def remove_banned_user(self, username):
+        cursor = self.db_connection.cursor()
+        query = "DELETE FROM banned_users WHERE username='" + str(username) + "'"
+        cursor.execute(query)
+        self.db_connection.commit()
+

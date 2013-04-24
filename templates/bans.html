@@ -26,8 +26,10 @@
 </head>
 <body>
 
-ok
-{{ bans }}
+{% for user in bans %}
+  {{ user[1] }} - <a href="/bans?rm={{ user[1] }}&csrf_token={{ token }}">[-]</a>
+{% end %}
+
 
 </body>
 </html>

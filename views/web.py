@@ -134,7 +134,13 @@ class BanManager(WebRequestHandler):
         token = self.get_argument('csrf_token', None)
         db = Database()
         user, mod = db.get_username(token)
+        rm = self.get_argument('rm', None)
 
-        #if mod:
-        bans = db.get_banned_users()
-        self.render('bans.html',{'bans': bans})
+        if mod and rm is not None:
+            db.remove_banned_user(rm)
+
+        if mod:
+            bans = db.get_banned_users()
+            self.render('bans.html',{'bans': bans, 'token': token})
+        else:
+            self.write("You are not a moderator!")
