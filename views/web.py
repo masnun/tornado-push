@@ -39,7 +39,7 @@ class Pusher(WebRequestHandler):
             db = Database()
             user, mod = db.get_username(csrf_token)
 
-            if user is not None:
+            if user is not None and not db.is_banned(user):
                 # Add message
                 if action == 'add':
                     line_id, date = db.save_message(user, value)
