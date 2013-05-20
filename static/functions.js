@@ -16,7 +16,7 @@ function connect() {
         if (action == "add") {
 
             if (mod_status == 1) {
-                var del_link = ' <a href="javascript:void(0)" onclick="removeMessage(' + data.line + ');"><span style="float:left;" class="ui-icon ui-icon-trash"></span></a>';
+                var del_link = ' <a href="javascript:void(0)" onclick="removeMessage(' + data.line + ');"><span style="float:left;" class="ui-icon ui-icon-trash"></span></a><br/>';
                 var del_all_link = ' <a href="javascript:void(0)" onclick="removeAllMessages(\'' + data.user + '\');"><span style="float:left;" class="ui-icon ui-icon-alert"></span></a>';
                 var ban_link = ' <a href="javascript:void(0)" onclick="banUser(\'' + data.user + '\');"><span style="float:left;" class="ui-icon ui-icon-circle-minus"></span></a>';
             } else {
