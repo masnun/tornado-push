@@ -43,7 +43,7 @@ class AfChatWidget extends WP_Widget
 
             $token = getUserAuthToken("http://localhost:8888/auth", "secret", $wpUser->user_login, $isMod);
 
-            echo '<iframe width="200px" height="300px" src="http://localhost:8888/?csrf_token=' . $token . '"></iframe>';
+            echo '<iframe width="250px" height="550px" src="http://localhost:8888/?csrf_token=' . $token . '"></iframe>';
 
         } else {
             echo 'You must be logged into wordpress to chat!';
