@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Tornado Chat Demo</title>
+    <title>Banned List</title>
 
     <link href="/static/jquery-ui/css/ui-lightness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet">
     <link href="/static/main.css" rel="stylesheet">
@@ -22,14 +22,16 @@
     <script src="/static/main.js"></script>
 
 
-
 </head>
 <body>
 
-{% for user in bans %}
-  {{ user[1] }} - <a href="/bans?rm={{ user[1] }}&csrf_token={{ token }}">[-]</a>
+{% if len(bans) > 0 %}
+    {% for user in bans %}
+        {{ user[1] }} - <a href="/bans?rm={{ user[1] }}&csrf_token={{ token }}">[-]</a>
+    {% end %}
+{% else %}
+    No banned users yet!
 {% end %}
-
 
 </body>
 </html>
