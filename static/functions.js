@@ -3,7 +3,7 @@ function connect() {
     ws.onmessage = function (event) {
         var data = eval('(' + event.data + ')');
 
-        console.log(data);
+        //console.log(data);
 
         $("span#online").html(data.online);
 
@@ -47,12 +47,12 @@ function connect() {
         }
 
 
-    }
+    };
 
     ws.onclose = function () {
         $("div#chat").append($('<b>Connection Terminated</b><br/><br/>'));
         $("input#connect_btn").show();
-    }
+    };
 
     $("div#chat").append($('<b>Connection Stabilished</b><br/><br/>'));
     $("input#connect_btn").hide();
@@ -200,7 +200,7 @@ function selectTab(username) {
 }
 
 function blinkTab(tabName) {
-    var dom = $('a[href="#'+ tabName +'"]')
+    var dom = $('a[href="#'+ tabName +'"]');
     dom.effect("pulsate", {}, 5000);
 }
 

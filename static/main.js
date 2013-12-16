@@ -14,6 +14,13 @@ $(document).ready(function () {
         }
     );
 
+    $("#message").keyup(function (event) {
+        if (event.keyCode == 13) {
+            postMessage();
+        }
+    });
+
+
     $('.dialog-hidden').hide();
     connect();
-})
+});
