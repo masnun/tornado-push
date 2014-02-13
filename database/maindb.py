@@ -91,12 +91,14 @@ class Database:
         cursor.execute(query)
         self.db_connection.commit()
 
-    def ban_user(self, username):
+    def ban_user(self, username, message="N/A"):
         cursor = self.db_connection.cursor()
         username = self.db_connection.escape_string(username)
-        query = "INSERT INTO banned_users (username) VALUES ('" + username + "')"
+        query = "INSERT INTO banned_users (username, message) VALUES ('" + username + "','" + message + "')"
         cursor.execute(query)
         self.db_connection.commit()
+
+    
 
 
     def is_banned(self, username):
