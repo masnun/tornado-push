@@ -12,6 +12,9 @@ class FrontPage(WebRequestHandler):
         token = self.get_argument('csrf_token', None)
         db = Database()
         user, mod = db.get_username(token)
+
+        print self.request.host
+
         if user:
             self.render('chat.html', {'host': self.request.host, 'user': user, 'csrf_token': token, 'mod': mod})
         else:
@@ -38,11 +41,13 @@ class Pusher(WebRequestHandler):
         if value is not None and action is not None and csrf_token is not None:
             db = Database()
             user, mod = db.get_username(csrf_token)
+            user_id = db.get_user_id(csrf_token)
 
             if user is not None and not db.is_banned(user):
                 # Add message
                 if action == 'add':
                     line_id, date = db.save_message(user, value)
+                    db.add_karma_points("Added message", 1, user_id)
                     response = {'user': user, 'action': action, 'val': value, 'line': line_id,
                                 'online': len(SOCKETS)}
                     data = json.dumps(response)
@@ -110,6 +115,7 @@ class AuthToken(WebRequestHandler):
     def post(self, *args, **kwargs):
         secret_key = self.get_argument('secret_key', None)
         username = self.get_argument('username', None)
+        userid = self.get_argument('user_id', None)
         mod = self.get_argument('mod', 0)
         db = Database()
 
@@ -120,7 +126,7 @@ class AuthToken(WebRequestHandler):
             if secret_key == SECRET_KEY:
                 token = hashlib.md5(str(time.time()) + username).hexdigest()
 
-                db.set_token(username, token, int(mod))
+                db.set_token(username, int(userid), token, int(mod))
 
                 response = {'status': 'ok', 'token': token}
                 self.write(json.dumps(response))

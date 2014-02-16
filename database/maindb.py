@@ -10,12 +10,12 @@ class Database:
     def get_connection(self):
         return self.db_connection
 
-    def set_token(self, username, token, mod=0):
+    def set_token(self, username, user_id, token, mod=0):
         cursor = self.db_connection.cursor()
         cursor.execute("DELETE FROM users WHERE user_name='" + str(username) + "'")
         cursor.execute(
-            "INSERT INTO users (user_name,csrf_token,`mod`) VALUES ('" + str(username) + "','" + str(
-                token) + "','" + str(mod) + "') ")
+            "INSERT INTO users (user_name, user_id, csrf_token,`mod`) VALUES ('"
+            + str(username) + "'," + str(user_id) + ",'" + str(token) + "','" + str(mod) + "') ")
         self.db_connection.commit()
 
     def get_token(self, username):
@@ -33,9 +33,21 @@ class Database:
         data = cursor.fetchone()
 
         if data is not None:
-            return data[0], data[2]
+            return data[0], data[3]
         else:
             return None, None
+
+    def get_user_id(self, token):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM users WHERE csrf_token='" + str(token) + "'"
+        cursor.execute(query)
+        data = cursor.fetchone()
+
+        if data is not None:
+            return data[1]
+        else:
+            return None
+
 
     def save_message(self, user_name, message):
         if self.is_banned(user_name):
@@ -98,8 +110,6 @@ class Database:
         cursor.execute(query)
         self.db_connection.commit()
 
-    
-
 
     def is_banned(self, username):
         cursor = self.db_connection.cursor()
@@ -126,4 +136,17 @@ class Database:
         query = "DELETE FROM banned_users WHERE username='" + str(username) + "'"
         cursor.execute(query)
         self.db_connection.commit()
+
+
+    def add_karma_points(self, description, points, user_id):
+        cursor = self.db_connection.cursor()
+        p_date = time.strftime('%Y-%m-%d %H:%M:%S')
+        query = "INSERT INTO wp_karma_points (points_desc, points, user_id, p_date) VALUES ('" + description + "'," + str(
+            points) + "," + str(user_id) + ",'" + p_date + "')"
+
+        cursor.execute(query)
+        line_id = self.db_connection.insert_id()
+        self.db_connection.commit()
+        return line_id
+
 
