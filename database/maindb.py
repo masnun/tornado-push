@@ -48,6 +48,17 @@ class Database:
         else:
             return None
 
+    def get_user_id_from_username(self, username):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM users WHERE user_name='" + str(username) + "'"
+        cursor.execute(query)
+        data = cursor.fetchone()
+
+        if data is not None:
+            return data[1]
+        else:
+            return None
+
 
     def save_message(self, user_name, message):
         if self.is_banned(user_name):
@@ -80,6 +91,13 @@ class Database:
             return line_id, str(datetime.datetime.fromtimestamp(timestamp).strftime("%B %d, %Y"))
 
     def remove_message(self, message_id):
+
+        #Handle Karma
+        message = self.get_message(message_id)
+        username = message[2]
+        user_id = self.get_user_id_from_username(username)
+        self.add_karma_points("One message removed", -5, user_id)
+
         cursor = self.db_connection.cursor()
         query = "DELETE FROM messages WHERE id=" + str(message_id)
         cursor.execute(query)
@@ -97,13 +115,29 @@ class Database:
         messages.reverse()
         return messages
 
+    def get_message(self, id):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM messages WHERE id=" + str(id)
+        cursor.execute(query)
+        data = cursor.fetchall()
+        return data[0]
+
+
     def remove_all_messages(self, username):
+        #Handle Karma
+        user_id = self.get_user_id_from_username(username)
+        self.add_karma_points("All messages removed", -50, user_id)
+
         cursor = self.db_connection.cursor()
         query = "DELETE FROM messages WHERE user_name='" + str(username) + "'"
         cursor.execute(query)
         self.db_connection.commit()
 
     def ban_user(self, username, message="N/A"):
+        #Handle Karma
+        user_id = self.get_user_id_from_username(username)
+        self.add_karma_points("User banned: " + message, -500, user_id)
+
         cursor = self.db_connection.cursor()
         username = self.db_connection.escape_string(username)
         query = "INSERT INTO banned_users (username, message) VALUES ('" + username + "','" + message + "')"

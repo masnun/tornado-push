@@ -41,13 +41,10 @@ class Pusher(WebRequestHandler):
         if value is not None and action is not None and csrf_token is not None:
             db = Database()
             user, mod = db.get_username(csrf_token)
-            user_id = db.get_user_id(csrf_token)
-
             if user is not None and not db.is_banned(user):
                 # Add message
                 if action == 'add':
                     line_id, date = db.save_message(user, value)
-                    db.add_karma_points("Added message", 1, user_id)
                     response = {'user': user, 'action': action, 'val': value, 'line': line_id,
                                 'online': len(SOCKETS)}
                     data = json.dumps(response)
