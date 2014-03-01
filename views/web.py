@@ -132,6 +132,7 @@ class AuthToken(WebRequestHandler):
                 response = {'status': 'error', 'token': None}
                 self.write(json.dumps(response))
 
+
 class BanManager(WebRequestHandler):
     def get(self):
         token = self.get_argument('csrf_token', None)
@@ -144,6 +145,6 @@ class BanManager(WebRequestHandler):
 
         if mod:
             bans = db.get_banned_users()
-            self.render('bans.html',{'bans': bans, 'token': token})
+            self.render('bans.html', {'bans': bans, 'token': token})
         else:
             self.write("You are not a moderator!")

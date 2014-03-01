@@ -183,4 +183,28 @@ class Database:
         self.db_connection.commit()
         return line_id
 
+    def get_likes_dislikes_message(self, message_id):
+        cursor = self.db_connection.cursor()
+        query = "SELECT * FROM likes_dislikes WHERE message_id=" + str(message_id)
+        cursor.execute(query)
+        data = cursor.fetchall()
+
+        if data:
+            return data
+        else:
+            query = "INSERT INTO likes_dislikes (message_id, likes, dislikes) VALUES (" + str(message_id) + ",0,0)"
+            cursor.execute(query)
+            line_id = self.db_connection.insert_id()
+            self.db_connection.commit()
+
+            return message_id, 0, 0,
+
+    def update_likes_dislikes_message(self, message_id, col, value):
+        cursor = self.db_connection.cursor()
+        query = "UPDATE likes_dislikes SET " + str(col) + "='" + str(value) + "' where message_id=" + str(message_id)
+        cursor.execute(query)
+
+
+    def update_likes_for_message(self, message_id):
+        likes = self.get_likes_dislikes_message(message_id)[1]
 
