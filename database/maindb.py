@@ -190,7 +190,7 @@ class Database:
         data = cursor.fetchall()
 
         if data:
-            return data
+            return data[0]
         else:
             query = "INSERT INTO likes_dislikes (message_id, likes, dislikes) VALUES (" + str(message_id) + ",0,0)"
             cursor.execute(query)
@@ -203,8 +203,15 @@ class Database:
         cursor = self.db_connection.cursor()
         query = "UPDATE likes_dislikes SET " + str(col) + "='" + str(value) + "' where message_id=" + str(message_id)
         cursor.execute(query)
+        self.db_connection.commit()
 
 
     def update_likes_for_message(self, message_id):
         likes = self.get_likes_dislikes_message(message_id)[1]
+        likes = likes + 1
+        self.update_likes_dislikes_message(message_id, 'likes', likes)
 
+    def update_dislikes_for_message(self, message_id):
+        dislikes = self.get_likes_dislikes_message(message_id)[2]
+        dislikes = dislikes + 1
+        self.update_likes_dislikes_message(message_id, 'dislikes', dislikes)
